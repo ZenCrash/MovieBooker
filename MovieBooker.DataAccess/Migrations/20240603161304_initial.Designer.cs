@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieBooker.DataAccess;
 
@@ -11,9 +12,11 @@ using MovieBooker.DataAccess;
 namespace MovieBooker.DataAccess.Migrations
 {
     [DbContext(typeof(MovieBookerContext))]
-    partial class MovieBookerContextModelSnapshot : ModelSnapshot
+    [Migration("20240603161304_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

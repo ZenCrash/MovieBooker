@@ -9,6 +9,6 @@ namespace MovieBooker.DataAccess.Model
 {
     public class Role : IdentityRole
     {
-        public int Id { get; set; }
+
     }
 }

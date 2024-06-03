@@ -24,7 +24,17 @@ namespace MovieBooker.DataAccess
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlServer($"Server=.\\SQLExpress;Database={_databaseName};Trusted_Connection=True");
-        
+        {
+            if (!options.IsConfigured)
+            {
+                options.UseSqlServer($"Server=.\\SQLExpress;Database={_databaseName};Trusted_Connection=True");
+            }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
     }
 }
