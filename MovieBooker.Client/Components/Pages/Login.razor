@@ -1,0 +1,111 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@using System.ComponentModel.DataAnnotations;
+@using System.Linq;
+
+<h3>Register</h3>
+
+<div>
+    <div>
+        @if (AccountRegistered)
+        {
+            <h3>Account create sucessfully!</h3>
+            <h3>Rediricting in 5 seconds.</h3>
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only"></span>
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@_inputModel" OnValidSubmit="PostAsync">
+                <DataAnnotationsValidator/>
+                @*Email*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.Email">Email:</label>
+                    <InputText class="form-control" id="@_inputModel.Email" @bind-Value="@_inputModel.Email" type="email" />
+                    <ValidationMessage For="@(() => _inputModel.Email)" class="text-danger" />
+                </div>
+                @*Password*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.Password">Password:</label>
+                    <InputText class="form-control" id="@_inputModel.Password" @bind-Value="@_inputModel.Password" type="password" />
+                    <ValidationMessage For="@(() => _inputModel.Password)" class="text-danger" />
+                </div>
+                @*Confirm Password*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.Password">Password:</label>
+                    <InputText class="form-control" id="@_inputModel.Password" @bind-Value="@_inputModel.Password" type="password" />
+                    <ValidationMessage For="@(() => _inputModel.Password)" class="text-danger" />
+                </div>
+                @*First Name*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.FirstName">First Name:</label>
+                    <InputText class="form-control" id="@_inputModel.FirstName" @bind-Value="@_inputModel.FirstName" type="text" />
+                    <ValidationMessage For="@(() => _inputModel.FirstName)" class="text-danger" />
+                </div>
+                @*Last Name*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.LastName">Last Name:</label>
+                    <InputText class="form-control" id="@_inputModel.LastName" @bind-Value="@_inputModel.LastName" type="text" />
+                    <ValidationMessage For="@(() => _inputModel.LastName)" class="text-danger" />
+                </div>
+                @*PhoneNumber*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.PhoneNumber">Last Name:</label>
+                    <InputText class="form-control" id="@_inputModel.LastName" @bind-Value="@_inputModel.LastName" type="text" />
+                    <ValidationMessage For="@(() => _inputModel.LastName)" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code {
+    private bool AccountRegistered { get; set; } = false;
+    private InputModel _inputModel { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private async Task OnPost()
+    {
+        throw new NotImplementedException();
+    }
+
+    //Input Model Code
+    private class InputModel
+    {
+        [Required(ErrorMessage = "Name is required.")]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Email is required.")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [Required(ErrorMessage = "Phone number is required.")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+        [Required]
+        [StringLength(256, MinimumLength = 2)]
+        public string Firstname { get; set; }
+        [Required]
+        [StringLength(256, MinimumLength = 2)]
+        public string LastName { get; set; }
+        [Phone]
+        public string PhoneNumber { get; set; }
+        [Required]
+        public Languages Language { get; set; }
+    }
+
+    public enum Languages
+    {
+        Danish,
+        English,
+        German,
+    }
+}
