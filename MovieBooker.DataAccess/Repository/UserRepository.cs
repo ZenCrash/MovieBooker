@@ -12,6 +12,10 @@ namespace MovieBooker.DataAccess.Repository
     public class UserRepository : IRepositoryAsync<User, string>
     {
         private readonly MovieBookerContext _context;
+        public UserRepository()
+        {
+            _context = new();
+        }
 
         //Create
         public async Task<bool> CreateAsync(User entity)
@@ -35,18 +39,22 @@ namespace MovieBooker.DataAccess.Repository
         //Getall
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            var entityList = await _context.Users.ToListAsync();
+            entityList.ForEach(entity => entity.PasswordHash = string.Empty);
+            return entityList;
         }
 
         //Get
         public async Task<User> GetByIdAsync(string id)
         {
-            return await _context.Users.FindAsync(id);
+            var entity = await _context.Users.FindAsync(id);
+            entity.PasswordHash = string.Empty;
+            return entity;
         }
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _context.Users.FindAsync(email);
+            return await _context.Users.SingleOrDefaultAsync(entity => entity.Email == email);
         }
 
         //update

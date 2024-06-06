@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using MovieBooker.DataAccess.Repository;
 
 var builder = WebApplication.CreateBuilder(args);

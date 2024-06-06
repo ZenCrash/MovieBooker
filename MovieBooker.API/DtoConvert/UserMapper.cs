@@ -10,30 +10,27 @@ namespace MovieBooker.API.DtoConvert
     {
         public static UserDto ToDto(this User model)
         {
-            return new UserDto
-            {
-                Id = model.Id,
-                UserName = model.UserName,
-                Password = null,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-            };
+            return new UserDto(model.Id, 
+                               model.UserName, 
+                               model.FirstName, 
+                               model.LastName, 
+                               model.Email, 
+                               model.PhoneNumber);
         }
 
+        //create/update - model
         public static User ToModel(this UserDto dto)
         {
-            IPasswordHasher<UserDto> userManager = new PasswordHasher<UserDto>();
 
             return new User
             {
-                Id = dto.Id,
                 UserName = dto.UserName,
-                PasswordHash = userManager.HashPassword(dto, dto.Password),
+                NormalizedUserName = dto.UserName.ToUpper(),
+                PasswordHash = dto.Password,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
+                NormalizedEmail = dto.Email.ToUpper(),
                 PhoneNumber = dto.PhoneNumber,
             };
         }

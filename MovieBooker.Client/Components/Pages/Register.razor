@@ -28,7 +28,6 @@
         {
             <EditForm Model="@_inputModel" OnValidSubmit="OnPost" OnInvalidSubmit="InvalidPost" FormName="RegisterModel">
                 <DataAnnotationsValidator />
-                <ValidationSummary />
                 @*Email*@
                 <div class="form-group" style="margin:10px">
                     <label class="form-label" for="@_inputModel.Email">Email: *</label>
@@ -81,7 +80,8 @@
 
 @code {
     private bool AccountRegistered { get; set; } = false;
-    private InputModel _inputModel = new();
+    [SupplyParameterFromForm]
+    private InputModel _inputModel { get; set; } = new();
     private List<string> errorMessages { get; set; } = new();
 
     protected override void OnInitialized()
@@ -91,45 +91,38 @@
 
     private async Task OnPost()
     {
-        Console.WriteLine($"Email: {_inputModel.Email}");
-        Console.WriteLine($"Password: {_inputModel.Password}");
-        Console.WriteLine($"Firstname: {_inputModel.FirstName}");
-        Console.WriteLine($"Lastname: {_inputModel.LastName}");
-        Console.WriteLine($"Phonenumber: {_inputModel.PhoneNumber}");
-
         //does user exist?
         var userExists = await userController.GetByEmail(_inputModel.Email);
         if (userExists != null)
         {
             string error = "Email is already in use.";
             errorMessages.Add(error);
+            StateHasChanged();
             return;
         }
 
+        IPasswordHasher<InputModel> userManager = new PasswordHasher<InputModel>();
+
         //create new user
-        var identity = new UserDto
-            {
-                UserName = _inputModel.Email,
-                Password = _inputModel.Password,
-                Email = _inputModel.Email,
-                FirstName = _inputModel.FirstName,
-                LastName = _inputModel.LastName,
-                PhoneNumber = _inputModel.PhoneNumber,
-            };
-        var result = await userController.Create(identity);
+        var identity = new UserDto(username: _inputModel.Email,
+                                    password: userManager.HashPassword(_inputModel, _inputModel.Password),
+                                    email: _inputModel.Email,
+                                    firstName: _inputModel.FirstName,
+                                    lastName: _inputModel.LastName,
+                                    phoneNumber: _inputModel.PhoneNumber,
+                                    placeholder: 0);
+
+        await userController.Create(identity);
 
         AccountRegistered = true;
+        StateHasChanged();
         await Task.Delay(5000);
         navigationManager.NavigateTo("/");
     }
 
     public async Task InvalidPost()
     {
-        Console.WriteLine($"Email: {_inputModel.Email}");
-        Console.WriteLine($"Password: {_inputModel.Password}");
-        Console.WriteLine($"Firstname: {_inputModel.FirstName}");
-        Console.WriteLine($"Lastname: {_inputModel.LastName}");
-        Console.WriteLine($"Phonenumber: {_inputModel.PhoneNumber}");
+        
     }
 
     //Input Model Code

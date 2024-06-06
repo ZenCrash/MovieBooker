@@ -32,13 +32,14 @@ namespace MovieBooker.API.Controllers
         public async Task<UserDto> Get(string id)
         {
             var entity = await _repository.GetByIdAsync(id);
-            return entity.ToDto();
+            return (entity != null) ? entity.ToDto() : null;
         }
 
+        [HttpGet("email/{email}")]
         public async Task<UserDto> GetByEmail(string email)
         {
             var entity = await _repository.GetByEmailAsync(email);
-            return entity.ToDto();
+            return (entity != null) ? entity.ToDto() : null;
         }
 
         //Create

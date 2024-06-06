@@ -31,7 +31,7 @@ namespace MovieBooker.API.Controllers
         public async Task<RoleDto> Get(string id)
         {
             var entity = await _repository.GetByIdAsync(id);
-            return entity.ToDto();
+            return (entity != null) ? entity.ToDto() : null;
         }
 
         [HttpGet(Name = $"GetAll{nameof(Role)}")]
