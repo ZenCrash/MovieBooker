@@ -1,3 +1,4 @@
+using MovieBooker.API.Controllers;
 using MovieBooker.Client.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//newnew
+builder.Services.AddSingleton<UserController>();
+builder.Services.AddSingleton<RoleController>();
+
 
 var app = builder.Build();
 

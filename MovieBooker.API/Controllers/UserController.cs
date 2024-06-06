@@ -35,6 +35,12 @@ namespace MovieBooker.API.Controllers
             return entity.ToDto();
         }
 
+        public async Task<UserDto> GetByEmail(string email)
+        {
+            var entity = await _repository.GetByEmailAsync(email);
+            return entity.ToDto();
+        }
+
         //Create
         //TODO: change signature of dtomapper method, and what gets sendt down
         [HttpPost(Name = $"Create{nameof(User)}")]
