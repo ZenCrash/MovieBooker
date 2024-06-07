@@ -104,13 +104,15 @@
         IPasswordHasher<InputModel> userManager = new PasswordHasher<InputModel>();
 
         //create new user
-        var identity = new UserDto(username: _inputModel.Email,
-                                    password: userManager.HashPassword(_inputModel, _inputModel.Password),
-                                    email: _inputModel.Email,
-                                    firstName: _inputModel.FirstName,
-                                    lastName: _inputModel.LastName,
-                                    phoneNumber: _inputModel.PhoneNumber,
-                                    placeholder: 0);
+        var identity = new UserDto.Create
+            {
+                UserName = _inputModel.Email,
+                PasswordHashed = userManager.HashPassword(_inputModel, _inputModel.Password),
+                FirstName = _inputModel.FirstName,
+                LastName = _inputModel.LastName,
+                Email = _inputModel.Email,
+                PhoneNumber = _inputModel.PhoneNumber,
+            };
 
         await userController.Create(identity);
 

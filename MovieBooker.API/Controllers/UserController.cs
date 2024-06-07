@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBooker.API.Dto;
-using MovieBooker.API.DtoConvert;
 using MovieBooker.API.Interface;
 using MovieBooker.DataAccess.Model;
 using MovieBooker.DataAccess.Repository;
@@ -24,6 +23,8 @@ namespace MovieBooker.API.Controllers
         public async Task<IEnumerable<UserDto>> GetAll()
         {
             var entityList = await _repository.GetAllAsync();
+
+
             return entityList.Select(entity => entity.ToDto());
         }
 
@@ -35,6 +36,7 @@ namespace MovieBooker.API.Controllers
             return (entity != null) ? entity.ToDto() : null;
         }
 
+        //Get by email
         [HttpGet("email/{email}")]
         public async Task<UserDto> GetByEmail(string email)
         {
@@ -45,7 +47,7 @@ namespace MovieBooker.API.Controllers
         //Create
         //TODO: change signature of dtomapper method, and what gets sendt down
         [HttpPost(Name = $"Create{nameof(User)}")]
-        public async Task<bool> Create(UserDto dto)
+        public async Task<bool> Create(UserDto.Create dto)
         {
             var entity = await _repository.CreateAsync(dto.ToModel());
             return entity;
@@ -53,7 +55,7 @@ namespace MovieBooker.API.Controllers
 
         //Update
         [HttpPut(Name = $"Update{nameof(User)}")]
-        public async Task<bool> Update(UserDto dto)
+        public async Task<bool> Update(UserDto.Create dto)
         {
             var entity = await _repository.UpdateAsync(dto.ToModel());
             return entity;

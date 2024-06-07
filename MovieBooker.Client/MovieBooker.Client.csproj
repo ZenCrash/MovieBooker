@@ -10,4 +10,8 @@
     <ProjectReference Include="..\MovieBooker.API\MovieBooker.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logic\" />
+  </ItemGroup>
+
 </Project>
