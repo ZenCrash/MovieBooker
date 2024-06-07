@@ -8,7 +8,7 @@ namespace MovieBooker.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : IController<UserDto, string>
+    public class UserController : IController<UserDto.Display, UserDto.Edit, string>
     {
         //private readonly UserRepository _repository;
         private UserRepository _repository { get; init; } = new();
@@ -20,34 +20,32 @@ namespace MovieBooker.API.Controllers
 
         //Getall
         [HttpGet(Name = $"GetAll{nameof(User)}")]
-        public async Task<IEnumerable<UserDto>> GetAll()
+        public async Task<IEnumerable<UserDto.Display>> GetAll()
         {
             var entityList = await _repository.GetAllAsync();
-
-
-            return entityList.Select(entity => entity.ToDto());
+            return entityList.Select(UserDto.Display.ToDto);
         }
 
         //Get
         [HttpGet("{id}")]
-        public async Task<UserDto> Get(string id)
+        public async Task<UserDto.Display> Get(string id)
         {
             var entity = await _repository.GetByIdAsync(id);
-            return (entity != null) ? entity.ToDto() : null;
+            return entity != null ? UserDto.Display.ToDto(entity) : null;
         }
 
         //Get by email
         [HttpGet("email/{email}")]
-        public async Task<UserDto> GetByEmail(string email)
+        public async Task<UserDto.Display> GetByEmail(string email)
         {
             var entity = await _repository.GetByEmailAsync(email);
-            return (entity != null) ? entity.ToDto() : null;
+            return entity != null ? UserDto.Display.ToDto(entity) : null;
         }
 
         //Create
         //TODO: change signature of dtomapper method, and what gets sendt down
         [HttpPost(Name = $"Create{nameof(User)}")]
-        public async Task<bool> Create(UserDto.Create dto)
+        public async Task<bool> Create(UserDto.Edit dto)
         {
             var entity = await _repository.CreateAsync(dto.ToModel());
             return entity;
@@ -55,7 +53,7 @@ namespace MovieBooker.API.Controllers
 
         //Update
         [HttpPut(Name = $"Update{nameof(User)}")]
-        public async Task<bool> Update(UserDto.Create dto)
+        public async Task<bool> Update(UserDto.Edit dto)
         {
             var entity = await _repository.UpdateAsync(dto.ToModel());
             return entity;

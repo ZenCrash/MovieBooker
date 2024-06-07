@@ -3,12 +3,12 @@ using MovieBooker.DataAccess.Model;
 
 namespace MovieBooker.API.Interface
 {
-    public interface IController<Dto, IdDataType> where Dto : class
+    public interface IController<DisplayDto, EditDto, IdDataType> where DisplayDto : class
     {
-        public Task<IEnumerable<Dto>> GetAll();
-        public Task<Dto> Get(IdDataType id);
-        public Task<bool> Create(Dto dto);
-        public Task<bool> Update(Dto dto);
+        public Task<IEnumerable<DisplayDto>> GetAll();
+        public Task<DisplayDto> Get(IdDataType id);
+        public Task<bool> Create(EditDto dto);
+        public Task<bool> Update(EditDto dto);
         public Task<bool> Delete(IdDataType id);
     }
 }

@@ -19,25 +19,22 @@ namespace MovieBooker.API.Dto
             public string NormilaziedEmail { get { return $"{Email.ToUpper()}"; } }
             public string PhoneNumber { get; init; }
 
-            //TODO replace with a to dto class
-            public User ToModel()
+            public static Display ToDto(User user)
             {
-                return new User
+                return new UserDto.Display
                 {
-                    Id = Id,
-                    UserName = this.UserName,
-                    NormalizedUserName = this.UserName,
-                    FirstName = this.FirstName,
-                    LastName = this.LastName,
-                    Email = this.Email,
-                    NormalizedEmail = this.Email,
-                    PhoneNumber = this.PhoneNumber,
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
                 };
             }
         }
 
         //Database creation entry
-        public class Create
+        public class Edit
         {
             public string Id { get; set; } = null;
             public string UserName { get; init; }

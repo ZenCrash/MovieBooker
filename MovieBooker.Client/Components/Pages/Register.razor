@@ -104,7 +104,7 @@
         IPasswordHasher<InputModel> userManager = new PasswordHasher<InputModel>();
 
         //create new user
-        var identity = new UserDto.Create
+        var identity = new UserDto.Edit
             {
                 UserName = _inputModel.Email,
                 PasswordHashed = userManager.HashPassword(_inputModel, _inputModel.Password),
