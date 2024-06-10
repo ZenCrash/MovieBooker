@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MovieBooker.DataAccess.Model;
+using MovieBooker.API.Model;
 using System.Runtime.CompilerServices;
 
 namespace MovieBooker.API.Dto

@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBooker.API.Dto;
 using MovieBooker.API.Interface;
-using MovieBooker.DataAccess.Model;
-using MovieBooker.DataAccess.Repository;
+using MovieBooker.API.Repository;
+using MovieBooker.API.Model;
 
 namespace MovieBooker.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : IController<UserDto.Display, UserDto.Edit, string>
+    public class UserController : IControllerAsync<UserDto.Display, UserDto.Edit, string>
     {
-        private UserRepository _repository { get; init; } = new();
+        private UserRepository _repository;
 
-        public UserController() 
+        public UserController(UserRepository repository) 
         {
-            
+            _repository = repository;
         }
 
         /* Get */

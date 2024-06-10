@@ -7,9 +7,11 @@
 @using MovieBooker.API.Dto
 @using MovieBooker.API.Controllers
 @using System.Text.RegularExpressions;
+@using MovieBooker.API.Model;
 
 @inject UserController userController
 @inject NavigationManager navigationManager
+@inject SignInManager<User> signInManager
 
 @page "/Login"
 
@@ -60,33 +62,15 @@
     {
         errorMessages.Clear();
 
-        var user = await userController.GetByUsername(_inputModel.Username);
-        if (user == null)
-        {
-            // errorMessages.Add("Username or password was incorrect");
-            errorMessages.Add("No users by that Username exists, or the local database is down");
-            StateHasChanged();
-            return;
-        }
-
-        IPasswordHasher<InputModel> userManager = new PasswordHasher<InputModel>();
-        string hashedPassword = userManager.HashPassword(_inputModel, _inputModel.Password);
-
-        if (user == null || hashedPassword !=)
-
-        var result = await _signInManager.PasswordSignInAsync(
-            _inputModel.Username,
-            _inputModel.Password,
-            false,
-            lockoutOnFailure: false);
-
-        if (result.Succeeded)
+        var SignInResult = await signInManager.PasswordSignInAsync(_inputModel.Username, _inputModel.Password, true, false);
+        if (SignInResult.Succeeded)
         {
             navigationManager.NavigateTo("/");
         }
         else
         {
-            errorMessages.Add("Username or password was incorrect");
+            errorMessages.Add("Username or Password is incorrect");
+            StateHasChanged();
         }
     }
     private async Task InvalidLogin()

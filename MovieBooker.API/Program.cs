@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using MovieBooker.DataAccess.Repository;
+using Microsoft.EntityFrameworkCore;
+using MovieBooker.API;
+using MovieBooker.API.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +13,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<RoleRepository>();
+//builder.Services.AddScoped<UserRepository>(); //OLD
+//builder.Services.AddScoped<RoleRepository>(); //OLD
+
+// Configure EF Core and Identity
+//builder.Services.AddDbContext<MovieBookerContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection")));
 
 var app = builder.Build();
 

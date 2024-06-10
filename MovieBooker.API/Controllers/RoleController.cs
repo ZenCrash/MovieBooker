@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieBooker.API.Dto;
 using MovieBooker.API.Interface;
-using MovieBooker.DataAccess.Model;
-using MovieBooker.DataAccess.Repository;
+using MovieBooker.API.Model;
+using MovieBooker.API.Repository;
 
 namespace MovieBooker.API.Controllers
 {
