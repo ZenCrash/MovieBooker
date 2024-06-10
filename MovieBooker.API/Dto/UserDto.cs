@@ -12,11 +12,11 @@ namespace MovieBooker.API.Dto
             public string Id { get; set; }
             public string FullName { get { return $"{FirstName} {LastName}"; } }
             public string UserName { get; init; }
-            public string NormalizedUserName { get { return $"{UserName.ToUpper()}"; } }
+            public string NormalizedUserName { get; init; }
             public string FirstName { get; init; }
             public string LastName { get; init; }
             public string Email { get; init; }
-            public string NormilaziedEmail { get { return $"{Email.ToUpper()}"; } }
+            public string NormilaziedEmail { get; init; }
             public string PhoneNumber { get; init; }
 
             public static Display ToDto(User user)
@@ -38,12 +38,12 @@ namespace MovieBooker.API.Dto
         {
             public string Id { get; set; } = null;
             public string UserName { get; init; }
-            public string NormalizedUserName { get { return $"{UserName.ToUpper()}"; } }
+            public string NormalizedUserName { get; init; }
             public string PasswordHashed { get; init; }
             public string FirstName { get; init; }
             public string LastName { get; init; }
             public string Email { get; init; }
-            public string NormilaziedEmail { get { return $"{Email.ToUpper()}"; } }
+            public string NormilaziedEmail { get; init; }
             public string PhoneNumber { get; init; }
 
             public User ToModel()
@@ -51,12 +51,12 @@ namespace MovieBooker.API.Dto
                 return new User
                 {
                     UserName = this.UserName,
-                    NormalizedUserName = this.UserName,
+                    NormalizedUserName = this.UserName.ToUpper(),
                     PasswordHash = this.PasswordHashed,
                     FirstName = this.FirstName,
                     LastName = this.LastName,
                     Email = this.Email,
-                    NormalizedEmail = this.Email,
+                    NormalizedEmail = this.Email.ToUpper(),
                     PhoneNumber = this.PhoneNumber,
                 };
             }

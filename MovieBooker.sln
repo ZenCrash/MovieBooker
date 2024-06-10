@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBooker.DataAccess", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBooker.API", "MovieBooker.API\MovieBooker.API.csproj", "{3E3A2952-215A-4105-934B-A9BABB4530A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieBooker.Client", "MovieBooker.Client\MovieBooker.Client.csproj", "{ECABB3FD-F918-4A03-804C-9B72781D32F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBooker.Client", "MovieBooker.Client\MovieBooker.Client.csproj", "{ECABB3FD-F918-4A03-804C-9B72781D32F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

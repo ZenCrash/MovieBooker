@@ -54,7 +54,26 @@ namespace MovieBooker.DataAccess.Repository
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _context.Users.SingleOrDefaultAsync(entity => entity.Email == email);
+            return await _context.Users.SingleOrDefaultAsync(e => e.NormalizedEmail == email.ToUpper());
+        }
+
+        public async Task<User> GetByUsernameAsync(string username)
+        {
+            //username sould by default be email. so we check that first
+            //if not get by username
+            var entity = await _context.Users.SingleOrDefaultAsync(e => e.NormalizedEmail == username.ToUpper());
+            if (entity == null)
+            {
+                entity = await _context.Users.SingleOrDefaultAsync(e => e.NormalizedUserName == username.ToUpper());
+            }
+            return entity;
+
+        }
+
+        public async Task<User> GetByEmailAndUsername(string email, string username)
+        {
+            return await _context.Users.SingleOrDefaultAsync(e => e.NormalizedEmail == email.ToUpper() && 
+                                                                    e.NormalizedUserName == username.ToUpper());
         }
 
         //update
