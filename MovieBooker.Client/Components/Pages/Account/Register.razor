@@ -4,11 +4,13 @@
 @using Microsoft.AspNetCore.Mvc.RazorPages
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using System.Linq
-@using MovieBooker.API.Dto
-@using MovieBooker.API.Controllers
+@using MovieBooker.DataAccess.Dto
+@using MovieBooker.DataAccess.Model
+@using MovieBooker.DataAccess.Repository
 
-@inject UserController userController
-@inject NavigationManager navigationManager
+@inject UserRepository UserRepository
+@inject NavigationManager NavigationManager
+@inject UserManager<User> UserManager
 
 @page "/register"
 
@@ -91,35 +93,33 @@
 
     private async Task OnPost()
     {
-        //does user exist?
-        var userExists = await userController.GetByEmail(_inputModel.Email);
-        if (userExists != null)
-        {
-            string error = "Email is already in use.";
-            errorMessages.Add(error);
-            StateHasChanged();
-            return;
-        }
+        errorMessages.Clear();
 
-        IPasswordHasher<InputModel> userManager = new PasswordHasher<InputModel>();
-
-        //create new user
-        var identity = new UserDto.Edit
+        var user = new User
             {
                 UserName = _inputModel.Email,
-                PasswordHashed = userManager.HashPassword(_inputModel, _inputModel.Password),
+                Email = _inputModel.Email,
                 FirstName = _inputModel.FirstName,
                 LastName = _inputModel.LastName,
-                Email = _inputModel.Email,
-                PhoneNumber = _inputModel.PhoneNumber,
             };
+        var result = await UserManager.CreateAsync(user, _inputModel.Password);
 
-        await userController.Create(identity);
+        if (result.Succeeded)
+        {
+            //assign role //TODO refactor role insertion (role has to exist for us to add user to it)
+            await UserManager.AddToRoleAsync(user, "User");
 
-        AccountRegistered = true;
-        StateHasChanged();
-        await Task.Delay(5000);
-        navigationManager.NavigateTo("/");
+            AccountRegistered = true;
+            StateHasChanged();
+            NavigationManager.NavigateTo("/");   
+        }
+        else
+        {
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            errors.ForEach(e => Console.WriteLine("Registration Error: ", e));
+            errorMessages.Add("Error registration failed.");
+            StateHasChanged();
+        }
     }
 
     public async Task InvalidPost()

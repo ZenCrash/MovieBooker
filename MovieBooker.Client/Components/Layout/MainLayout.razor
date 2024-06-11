@@ -1,4 +1,13 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using MovieBooker.DataAccess.Model;
+@using Microsoft.AspNetCore.Identity;
+
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject NavigationManager NavigationManager
 
 <div class="page">
     <div class="sidebar">
@@ -7,13 +16,23 @@
 
     <main>
         <div class="top-row px-4">
-            @* <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a> *@
-            <NavLink class="nav-link" href="Login">
-                <span aria-hidden="true"></span> Login
-            </NavLink>
-            <NavLink class="nav-link" href="Register">
-                <span aria-hidden="true"></span> Register
-            </NavLink>
+            @if (authenticationState.User.Identity.IsAuthenticated)
+            {
+                <span>Welcome, @authenticationState.User.Identity.Name</span>
+                @* <button class="nav-link" @onclick="Logout">Logout</button> *@
+                <NavLink class="nav-link" href="Logout">
+                    <span aria-hidden="true"></span> Logout
+                </NavLink>
+            }
+            else
+            {
+                <NavLink class="nav-link" href="Login">
+                    <span aria-hidden="true"></span> Login
+                </NavLink>
+                <NavLink class="nav-link" href="Register">
+                    <span aria-hidden="true"></span> Register
+                </NavLink>
+            }
         </div>
 
         <article class="content px-4">
@@ -27,3 +46,27 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private AuthenticationState authenticationState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+
+    private async Task Logout()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (SignInManager.IsSignedIn(user))
+        {
+            await SignInManager.SignOutAsync();
+            var identity = await UserManager.FindByEmailAsync(user.Identity.Name);
+            await UserManager.UpdateSecurityStampAsync(identity);
+        }
+
+        NavigationManager.NavigateTo("/");
+    }
+}

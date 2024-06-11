@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MovieBooker.DataAccess.Dto;
 using MovieBooker.DataAccess.Interface;
 using MovieBooker.DataAccess.Model;
 using System;
@@ -9,46 +10,45 @@ using System.Threading.Tasks;
 
 namespace MovieBooker.DataAccess.Repository
 {
-    public class RoleRepository : IRepositoryAsync<Role, string>
+    public class RoleRepository : IRepositoryAsync<RoleDto, string>
     {
         private readonly MovieBookerContext _context;
 
-        //create
-        public async Task<bool> CreateAsync(Role entity)
+        public RoleRepository()
         {
-            _context.Roles.AddAsync(entity);
-            return await _context.SaveChangesAsync() > 0;
+            _context = new();
         }
 
-        //Delete
+        public async Task<bool> CreateAsync(RoleDto entity)
+        {
+            //Identity.Usermanager is responsable for this task
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> DeleteByIdAsync(string id)
         {
-            var entity = await GetByIdAsync(id);
-            if (entity != null)
-            {
-                _context.Remove(entity);
-                return await _context.SaveChangesAsync() > 0;
-            }
-            return false;
+            //Identity.Usermanager is responsable for this task
+            throw new NotImplementedException();
         }
 
-        //GetAll
-        public async Task<IEnumerable<Role>> GetAllAsync()
+        public async Task<IEnumerable<RoleDto>> GetAllAsync()
         {
-            return await _context.Roles.ToListAsync();
+            var entityList = await _context.Roles.ToListAsync();
+            var dtoList = entityList.Select(e => RoleDto.ToDto(e)).ToList();
+            return dtoList;
         }
 
-        //Get
-        public async Task<Role> GetByIdAsync(string id)
+        public async Task<RoleDto> GetByIdAsync(string id)
         {
-            return await _context.Roles.FindAsync(id);
+            var entity = await _context.Roles.FindAsync(id);
+            var dto = entity != null ? RoleDto.ToDto(entity) : null;
+            return dto;
         }
 
-        //Update
-        public async Task<bool> UpdateAsync(Role entity)
+        public async Task<bool> UpdateAsync(RoleDto entity)
         {
-            _context.Roles.Update(entity);
-            return await _context.SaveChangesAsync() > 0;
+            //Identity.Usermanager is responsable for this task
+            throw new NotImplementedException();
         }
     }
 }

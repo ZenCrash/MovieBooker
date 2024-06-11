@@ -7,16 +7,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MovieBooker.API\MovieBooker.API.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logic\" />
+    <Content Remove="Components\Pages\Account\Logout.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MovieBooker.DataAccess\MovieBooker.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Pages\Account\Logout.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\Account\Logout.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Pages\Account\Logout.razor" />
   </ItemGroup>
 
 </Project>

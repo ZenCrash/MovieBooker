@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace MovieBooker.DataAccess.Interface
 {
-    public interface IRepositoryAsync<T, IdType> where T : class
+    public interface IRepositoryAsync<Dto, IdType> where Dto : class
     {
-        public Task<IEnumerable<T>> GetAllAsync();
-        public Task<T> GetByIdAsync(IdType id);
-        public Task<bool> CreateAsync(T entity);
-        public Task<bool> UpdateAsync(T entity);
+        public Task<IEnumerable<Dto>> GetAllAsync();
+        public Task<Dto> GetByIdAsync(IdType id);
+        public Task<bool> CreateAsync(Dto entity);
+        public Task<bool> UpdateAsync(Dto entity);
         public Task<bool> DeleteByIdAsync(IdType id);
     }
 }

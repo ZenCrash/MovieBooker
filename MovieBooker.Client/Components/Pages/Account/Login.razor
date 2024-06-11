@@ -4,16 +4,16 @@
 @using Microsoft.AspNetCore.Mvc.RazorPages
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using System.Linq
-@using MovieBooker.API.Dto
-@using MovieBooker.API.Controllers
+@using MovieBooker.DataAccess.Dto
 @using System.Text.RegularExpressions;
-@using MovieBooker.API.Model;
+@using MovieBooker.DataAccess.Model;
+@using MovieBooker.DataAccess.Repository;
 
-@inject UserController userController
-@inject NavigationManager navigationManager
-@inject SignInManager<User> signInManager
+@inject UserRepository UserRepository
+@inject NavigationManager NavigationManager
+@inject SignInManager<User> SignInManager
 
-@page "/Login"
+@page "/login"
 
 <h3>Login</h3>
 
@@ -47,7 +47,6 @@
 </div>
 
 @code {
-    private readonly SignInManager<UserDto.Display> _signInManager;
 
     protected override void OnInitialized()
     {
@@ -62,17 +61,36 @@
     {
         errorMessages.Clear();
 
-        var SignInResult = await signInManager.PasswordSignInAsync(_inputModel.Username, _inputModel.Password, true, false);
-        if (SignInResult.Succeeded)
+        var result = await SignInManager.PasswordSignInAsync(
+            _inputModel.Username, 
+            _inputModel.Password,
+            isPersistent: false, //Remember Me
+            lockoutOnFailure: false);
+
+        if (result.Succeeded)
         {
-            navigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/");
+        }
+        else if (result.IsLockedOut)
+        {
+            errorMessages.Add("User account locked out.");
+        }
+        else if (result.IsNotAllowed)
+        {
+            //todo impliment
+            errorMessages.Add("Error login failed, User not allowed to sign in");
+        }
+        else if (result.RequiresTwoFactor)
+        {
+            //todo impliment
+            //Navigation.NavigateTo("/two-factor-authentication");
         }
         else
         {
-            errorMessages.Add("Username or Password is incorrect");
-            StateHasChanged();
+            errorMessages.Add("Error login failed");
         }
     }
+
     private async Task InvalidLogin()
     {
 
