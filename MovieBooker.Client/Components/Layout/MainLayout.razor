@@ -2,7 +2,6 @@
 @using System.Security.Claims
 @using MovieBooker.DataAccess.Model
 @using Microsoft.AspNetCore.Identity
-@inject IJSRuntime JSRuntime
 
 @inherits LayoutComponentBase
 
@@ -65,8 +64,5 @@
     private async Task OnLogout()
     {
         await SignInManager.SignOutAsync(); // Sign out the user
-
-        // Reload the page using JavaScript to ensure the authentication state is reset
-        await JSRuntime.InvokeVoidAsync("locationReload", "login");
     }
 }
