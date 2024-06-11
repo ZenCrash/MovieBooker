@@ -1,45 +1,46 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
-@using MovieBooker.DataAccess.Model;
-@using Microsoft.AspNetCore.Identity;
+@using MovieBooker.DataAccess.Model
+@using Microsoft.AspNetCore.Identity
+@inject IJSRuntime JSRuntime
 
 @inherits LayoutComponentBase
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
-@inject NavigationManager NavigationManager
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            @if (authenticationState.User.Identity.IsAuthenticated)
-            {
-                <span>Welcome, @authenticationState.User.Identity.Name</span>
-                @* <button class="nav-link" @onclick="Logout">Logout</button> *@
-                <NavLink class="nav-link" href="Logout">
-                    <span aria-hidden="true"></span> Logout
-                </NavLink>
-            }
-            else
-            {
-                <NavLink class="nav-link" href="Login">
-                    <span aria-hidden="true"></span> Login
-                </NavLink>
-                <NavLink class="nav-link" href="Register">
-                    <span aria-hidden="true"></span> Register
-                </NavLink>
-            }
+<CascadingAuthenticationState>
+    <div class="page">
+        <div class="sidebar">
+            <NavMenu />
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <div class="top-row px-4">
+                <AuthorizeView>
+                    <Authorized>
+                        <span aria-hidden="true">Welcome, @email</span>
+                        <button class="btn btn-link" @onclick="OnLogout">Logout</button>
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink class="nav-link" href="Login">
+                            <span aria-hidden="true">Login</span>
+                        </NavLink>
+                        <NavLink class="nav-link" href="Register">
+                            <span aria-hidden="true">Register</span>
+                        </NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+</CascadingAuthenticationState>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -48,25 +49,24 @@
 </div>
 
 @code {
-    private AuthenticationState authenticationState;
+    private string email;
 
     protected override async Task OnInitializedAsync()
-    {
-        authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    }
-
-    private async Task Logout()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (SignInManager.IsSignedIn(user))
+        if (user.Identity.IsAuthenticated)
         {
-            await SignInManager.SignOutAsync();
-            var identity = await UserManager.FindByEmailAsync(user.Identity.Name);
-            await UserManager.UpdateSecurityStampAsync(identity);
+            email = user.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
         }
+    }
 
-        NavigationManager.NavigateTo("/");
+    private async Task OnLogout()
+    {
+        await SignInManager.SignOutAsync(); // Sign out the user
+
+        // Reload the page using JavaScript to ensure the authentication state is reset
+        await JSRuntime.InvokeVoidAsync("locationReload", "login");
     }
 }

@@ -20,6 +20,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<RoleRepository>();
 
+//detailed frontend errors //TODO REMOVE
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => options.DetailedErrors = true);
 
 builder.Services.AddDbContext <MovieBookerContext>();
 builder.Services.AddIdentity<User, Role>(options => { 
