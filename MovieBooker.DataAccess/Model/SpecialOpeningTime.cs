@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MovieBooker.DataAccess.Model
 {
-    public class SpecialOpeningDay
+    public class SpecialOpeningTime
     {
         public int Id { get; set; }
         //start

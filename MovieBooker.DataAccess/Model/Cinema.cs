@@ -15,10 +15,10 @@ namespace MovieBooker.DataAccess.Model
         [Required]
         public string Description { get; set; }
         [Required]
-        public TimeZoneInfo TimeZone { get; set; }
+        public string TimeZone { get; set; }
         public Address Address { get; set; }
         public ICollection<OpeningTime> Openings { get; set; } = new List<OpeningTime>();
-        public ICollection<SpecialOpeningDay> SpecialOpenings { get; set; } = new List<SpecialOpeningDay>();
+        public ICollection<SpecialOpeningTime> SpecialOpenings { get; set; } = new List<SpecialOpeningTime>();
         public ICollection<Movie> Movies { get; set; } = new List<Movie>();
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
         public ICollection<Runtime> Runtimes { get; set; } = new List<Runtime>();
