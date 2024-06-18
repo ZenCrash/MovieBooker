@@ -22,8 +22,8 @@
 @code {
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         OnLogout();
+        base.OnInitialized();
     }
 
     private async Task OnLogout()
@@ -31,9 +31,5 @@
         await SignInManager.SignOutAsync();
         NavigationManager.NavigateTo("/");
         StateHasChanged();
-    }
-    private async Task Redirect()
-    {
-        NavigationManager.NavigateTo("/");
     }
 }
