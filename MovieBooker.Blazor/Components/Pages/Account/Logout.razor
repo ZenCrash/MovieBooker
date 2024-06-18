@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@using MovieBooker.DataAccess.Model;
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject NavigationManager NavigationManager
+
+@page "/logout"
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h3>you have sucessfully logged out!</h3>
+
+    </NotAuthorized>
+    <Authorized>
+        <h3>You are still logged in</h3>
+        <h3>Press Logout again to confirm logout</h3>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        OnLogout();
+    }
+
+    private async Task OnLogout()
+    {
+        await SignInManager.SignOutAsync();
+        NavigationManager.NavigateTo("/");
+        StateHasChanged();
+    }
+    private async Task Redirect()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

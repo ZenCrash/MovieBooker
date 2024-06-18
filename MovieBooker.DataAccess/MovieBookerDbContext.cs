@@ -18,6 +18,11 @@ namespace MovieBooker.DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
+        public MovieBookerDbContext(DbContextOptions<MovieBookerDbContext> options) : base(options) 
+        { 
+        
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!options.IsConfigured)

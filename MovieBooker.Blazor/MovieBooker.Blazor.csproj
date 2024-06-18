@@ -23,4 +23,8 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MovieBooker.DataAccess\MovieBooker.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

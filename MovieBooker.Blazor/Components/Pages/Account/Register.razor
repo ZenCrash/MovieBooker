@@ -1,0 +1,152 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Linq
+@using MovieBooker.DataAccess.Model
+
+@inject NavigationManager NavigationManager
+@inject UserManager<User> UserManager
+
+@page "/register"
+
+<h3>Register</h3>
+
+<div>
+    <div class="col-3">
+        @if (AccountRegistered)
+        {
+            <h3>Account created successfully!</h3>
+            <h3>Redirecting in 5 seconds.</h3>
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only"></span>
+            </div>
+        }
+        else
+        {
+            <EditForm Model="@_inputModel" OnValidSubmit="OnPost" OnInvalidSubmit="InvalidPost" FormName="RegisterModel">
+                <DataAnnotationsValidator />
+                @*Email*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.Email">Email: *</label>
+                    <InputText class="form-control" id="@_inputModel.Email" @bind-Value="_inputModel.Email" type="email" />
+                    <ValidationMessage For="@(() => _inputModel.Email)" class="text-danger" />
+                </div>
+                @*Password*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.Password">Password: *</label>
+                    <InputText class="form-control" id="@_inputModel.Password" @bind-Value="@_inputModel.Password" type="password" />
+                    <ValidationMessage For="@(() => _inputModel.Password)" class="text-danger" />
+                </div>
+                @*Confirm Password*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.ConfirmPassword">Confirm Password: *</label>
+                    <InputText class="form-control" id="@_inputModel.ConfirmPassword" @bind-Value="@_inputModel.ConfirmPassword" type="password" />
+                    <ValidationMessage For="@(() => _inputModel.ConfirmPassword)" class="text-danger" />
+                </div>
+                @*FirstName*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.FirstName">First Name:</label>
+                    <InputText class="form-control" id="@_inputModel.FirstName" @bind-Value="_inputModel.FirstName" type="tel" />
+                    <ValidationMessage For="@(() => _inputModel.FirstName)" class="text-danger" />
+                </div>
+                @*LastName*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.LastName">Last Name:</label>
+                    <InputText class="form-control" id="@_inputModel.LastName" @bind-Value="_inputModel.LastName" type="tel" />
+                    <ValidationMessage For="@(() => _inputModel.LastName)" class="text-danger" />
+                </div>
+                @*PhoneNumber*@
+                <div class="form-group" style="margin:10px">
+                    <label class="form-label" for="@_inputModel.PhoneNumber">Phone Number:</label>
+                    <InputText class="form-control" id="@_inputModel.PhoneNumber" @bind-Value="_inputModel.PhoneNumber" type="tel" />
+                    <ValidationMessage For="@(() => _inputModel.PhoneNumber)" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Register</button>
+            </EditForm>
+            <ul class="text-danger">
+                @foreach (var item in errorMessages)
+                {
+                    <li>
+                        <p>@item</p>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    private bool AccountRegistered { get; set; } = false;
+    [SupplyParameterFromForm]
+    private InputModel _inputModel { get; set; } = new();
+    private List<string> errorMessages { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private async Task OnPost()
+    {
+        errorMessages.Clear();
+
+        var user = new User
+            {
+                UserName = _inputModel.Email,
+                Email = _inputModel.Email,
+                PhoneNumber = _inputModel.PhoneNumber,
+                FirstName = _inputModel.FirstName,
+                LastName = _inputModel.LastName,
+            };
+        var result = await UserManager.CreateAsync(user, _inputModel.Password);
+
+        if (result.Succeeded)
+        {
+            //assign role //TODO refactor role insertion (role has to exist for us to add user to it)
+            //await UserManager.AddToRoleAsync(user, "User");
+
+            AccountRegistered = true;
+            StateHasChanged();
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            errors.ForEach(e => Console.WriteLine("Registration Error: ", e));
+            errorMessages.Add("Error registration failed.");
+            StateHasChanged();
+        }
+    }
+
+    public async Task InvalidPost()
+    {
+
+    }
+
+    //Input Model Code
+    private class InputModel
+    {
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required.")]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "Confirm Password is required.")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Firstname is required.")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Lastname is required.")]
+        public string LastName { get; set; }
+
+        [Phone(ErrorMessage = "Invalid phone number.")]
+        public string PhoneNumber { get; set; }
+    }
+}
