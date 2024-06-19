@@ -84,6 +84,22 @@ namespace MovieBooker.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Movies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PosterUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Movies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -225,94 +241,6 @@ namespace MovieBooker.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Movies",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PosterUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CinemaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Movies", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Movies_Cinemas_CinemaId",
-                        column: x => x.CinemaId,
-                        principalTable: "Cinemas",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OpeningTimes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FromDayOfWeek = table.Column<int>(type: "int", nullable: false),
-                    FromTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    ToDayOfWeek = table.Column<int>(type: "int", nullable: false),
-                    ToTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    CinemaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OpeningTimes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OpeningTimes_Cinemas_CinemaId",
-                        column: x => x.CinemaId,
-                        principalTable: "Cinemas",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
-                    HandicapCapacity = table.Column<int>(type: "int", nullable: false),
-                    CinemaId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Rooms_Cinemas_CinemaId",
-                        column: x => x.CinemaId,
-                        principalTable: "Cinemas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SpecialOpeningTimes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FromDayOfWeek = table.Column<int>(type: "int", nullable: false),
-                    FromTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    ToDayOfWeek = table.Column<int>(type: "int", nullable: false),
-                    ToTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    CinemaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SpecialOpeningTimes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SpecialOpeningTimes_Cinemas_CinemaId",
-                        column: x => x.CinemaId,
-                        principalTable: "Cinemas",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CategoryMovie",
                 columns: table => new
                 {
@@ -361,6 +289,98 @@ namespace MovieBooker.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CinemaMovie",
+                columns: table => new
+                {
+                    CinemasId = table.Column<int>(type: "int", nullable: false),
+                    MoviesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CinemaMovie", x => new { x.CinemasId, x.MoviesId });
+                    table.ForeignKey(
+                        name: "FK_CinemaMovie_Cinemas_CinemasId",
+                        column: x => x.CinemasId,
+                        principalTable: "Cinemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CinemaMovie_Movies_MoviesId",
+                        column: x => x.MoviesId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OpeningTimes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FromDayOfWeek = table.Column<int>(type: "int", nullable: false),
+                    FromTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    ToDayOfWeek = table.Column<int>(type: "int", nullable: false),
+                    ToTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    CinemaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OpeningTimes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OpeningTimes_Cinemas_CinemaId",
+                        column: x => x.CinemaId,
+                        principalTable: "Cinemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    HandicapCapacity = table.Column<int>(type: "int", nullable: false),
+                    CinemaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rooms_Cinemas_CinemaId",
+                        column: x => x.CinemaId,
+                        principalTable: "Cinemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SpecialOpeningTimes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FromDayOfWeek = table.Column<int>(type: "int", nullable: false),
+                    FromTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    ToDayOfWeek = table.Column<int>(type: "int", nullable: false),
+                    ToTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    CinemaId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecialOpeningTimes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SpecialOpeningTimes_Cinemas_CinemaId",
+                        column: x => x.CinemaId,
+                        principalTable: "Cinemas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Runtimes",
                 columns: table => new
                 {
@@ -368,9 +388,9 @@ namespace MovieBooker.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FromDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ToDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false),
                     CinemaId = table.Column<int>(type: "int", nullable: false),
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    RoomId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -391,8 +411,7 @@ namespace MovieBooker.DataAccess.Migrations
                         name: "FK_Runtimes_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -403,18 +422,12 @@ namespace MovieBooker.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RowNumber = table.Column<int>(type: "int", nullable: false),
                     SeatNumber = table.Column<int>(type: "int", nullable: false),
-                    RoomId = table.Column<int>(type: "int", nullable: false),
-                    CinemaId = table.Column<int>(type: "int", nullable: false)
+                    HandicapSeat = table.Column<bool>(type: "bit", nullable: false),
+                    RoomId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Seats", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Seats_Cinemas_CinemaId",
-                        column: x => x.CinemaId,
-                        principalTable: "Cinemas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Seats_Rooms_RoomId",
                         column: x => x.RoomId,
@@ -431,11 +444,11 @@ namespace MovieBooker.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FromDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ToDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CinemaId = table.Column<int>(type: "int", nullable: false),
                     RuntimeId = table.Column<int>(type: "int", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false),
-                    SeatId = table.Column<int>(type: "int", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    MovieId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -444,7 +457,8 @@ namespace MovieBooker.DataAccess.Migrations
                         name: "FK_Bookings_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Bookings_Cinemas_CinemaId",
                         column: x => x.CinemaId,
@@ -458,14 +472,38 @@ namespace MovieBooker.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Bookings_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Bookings_Runtimes_RuntimeId",
                         column: x => x.RuntimeId,
                         principalTable: "Runtimes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingSeat",
+                columns: table => new
+                {
+                    BookingsId = table.Column<int>(type: "int", nullable: false),
+                    SeatsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingSeat", x => new { x.BookingsId, x.SeatsId });
                     table.ForeignKey(
-                        name: "FK_Bookings_Seats_SeatId",
-                        column: x => x.SeatId,
+                        name: "FK_BookingSeat_Bookings_BookingsId",
+                        column: x => x.BookingsId,
+                        principalTable: "Bookings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookingSeat_Seats_SeatsId",
+                        column: x => x.SeatsId,
                         principalTable: "Seats",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -521,14 +559,14 @@ namespace MovieBooker.DataAccess.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_RoomId",
+                table: "Bookings",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RuntimeId",
                 table: "Bookings",
                 column: "RuntimeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_SeatId",
-                table: "Bookings",
-                column: "SeatId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",
@@ -536,19 +574,24 @@ namespace MovieBooker.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookingSeat_SeatsId",
+                table: "BookingSeat",
+                column: "SeatsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CategoryMovie_MoviesId",
                 table: "CategoryMovie",
+                column: "MoviesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CinemaMovie_MoviesId",
+                table: "CinemaMovie",
                 column: "MoviesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cinemas_AddressId",
                 table: "Cinemas",
                 column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Movies_CinemaId",
-                table: "Movies",
-                column: "CinemaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieTag_TagsId",
@@ -581,11 +624,6 @@ namespace MovieBooker.DataAccess.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Seats_CinemaId",
-                table: "Seats",
-                column: "CinemaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Seats_RoomId",
                 table: "Seats",
                 column: "RoomId");
@@ -615,10 +653,13 @@ namespace MovieBooker.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "BookingSeat");
 
             migrationBuilder.DropTable(
                 name: "CategoryMovie");
+
+            migrationBuilder.DropTable(
+                name: "CinemaMovie");
 
             migrationBuilder.DropTable(
                 name: "MovieTag");
@@ -633,10 +674,7 @@ namespace MovieBooker.DataAccess.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Runtimes");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "Seats");
@@ -646,6 +684,12 @@ namespace MovieBooker.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Runtimes");
 
             migrationBuilder.DropTable(
                 name: "Movies");

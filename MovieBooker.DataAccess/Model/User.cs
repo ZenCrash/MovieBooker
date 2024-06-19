@@ -14,5 +14,6 @@ namespace MovieBooker.DataAccess.Model
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+        ICollection<Booking> Bookings { get; set; }
     }
 }

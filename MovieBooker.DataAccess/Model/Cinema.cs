@@ -16,6 +16,7 @@ namespace MovieBooker.DataAccess.Model
         public string Description { get; set; }
         [Required]
         public string TimeZone { get; set; }
+        [Required]
         public Address Address { get; set; }
         public ICollection<OpeningTime> Openings { get; set; } = new List<OpeningTime>();
         public ICollection<SpecialOpeningTime> SpecialOpenings { get; set; } = new List<SpecialOpeningTime>();

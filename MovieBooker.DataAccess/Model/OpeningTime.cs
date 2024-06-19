@@ -18,6 +18,8 @@ namespace MovieBooker.DataAccess.Model
         [Required]
         public DayOfWeek ToDayOfWeek { get; set; }
         public TimeSpan ToTime { get; set; }
+        [Required]
+        public Cinema Cinema { get; set; }
         //TODO Lastupdated and updatedby 
     }
 }

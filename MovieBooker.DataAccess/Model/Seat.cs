@@ -12,9 +12,9 @@ namespace MovieBooker.DataAccess.Model
         public int Id { get; set; }
         public int RowNumber { get; set; }
         public int SeatNumber { get; set; }
+        public bool HandicapSeat { get; set; }
         [Required]
         public Room Room { get; set; }
-        [Required]
-        public Cinema Cinema { get; set; }
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

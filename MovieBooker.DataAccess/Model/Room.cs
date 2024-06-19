@@ -16,6 +16,7 @@ namespace MovieBooker.DataAccess.Model
         public int Capacity { get; set; }
         [Required]
         public int HandicapCapacity { get; set; }
+        [Required]
         public Cinema Cinema { get; set; }
         public ICollection<Seat> Seats { get; set; } = new List<Seat>();
         public ICollection<Runtime> Runtimes { get; set; } = new List<Runtime>();

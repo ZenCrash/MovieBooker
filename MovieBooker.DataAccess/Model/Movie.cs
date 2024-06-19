@@ -14,11 +14,10 @@ namespace MovieBooker.DataAccess.Model
         public string Name { get; set; }
         public string Description { get; set; }
         public string PosterUrl { get; set; }
-        [Required]
         public DateTime ReleaseDate { get; set; }
+        public ICollection<Cinema> Cinemas { get; set; } = new List<Cinema>();
         public ICollection<Category> Categories { get; set; } = new List<Category>();
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public ICollection<Runtime> Runtimes { get; set; } = new List<Runtime>();
-        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }

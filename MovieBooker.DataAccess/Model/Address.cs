@@ -21,5 +21,6 @@ namespace MovieBooker.DataAccess.Model
         public string PostalCode { get; set; }
         [Required]
         public string Country { get; set; }
+        public Cinema Cinema { get; set; }
     }
 }

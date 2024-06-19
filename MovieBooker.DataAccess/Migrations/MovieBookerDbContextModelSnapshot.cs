@@ -22,6 +22,21 @@ namespace MovieBooker.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BookingSeat", b =>
+                {
+                    b.Property<int>("BookingsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookingsId", "SeatsId");
+
+                    b.HasIndex("SeatsId");
+
+                    b.ToTable("BookingSeat");
+                });
+
             modelBuilder.Entity("CategoryMovie", b =>
                 {
                     b.Property<int>("CategoriesId")
@@ -35,6 +50,21 @@ namespace MovieBooker.DataAccess.Migrations
                     b.HasIndex("MoviesId");
 
                     b.ToTable("CategoryMovie");
+                });
+
+            modelBuilder.Entity("CinemaMovie", b =>
+                {
+                    b.Property<int>("CinemasId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MoviesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CinemasId", "MoviesId");
+
+                    b.HasIndex("MoviesId");
+
+                    b.ToTable("CinemaMovie");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -201,16 +231,17 @@ namespace MovieBooker.DataAccess.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RuntimeId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeatId")
+                    b.Property<int>("RuntimeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ToDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -219,9 +250,9 @@ namespace MovieBooker.DataAccess.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.HasIndex("RuntimeId");
+                    b.HasIndex("RoomId");
 
-                    b.HasIndex("SeatId");
+                    b.HasIndex("RuntimeId");
 
                     b.HasIndex("UserId");
 
@@ -283,9 +314,6 @@ namespace MovieBooker.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CinemaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -303,8 +331,6 @@ namespace MovieBooker.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CinemaId");
-
                     b.ToTable("Movies");
                 });
 
@@ -316,7 +342,7 @@ namespace MovieBooker.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CinemaId")
+                    b.Property<int>("CinemaId")
                         .HasColumnType("int");
 
                     b.Property<int>("FromDayOfWeek")
@@ -410,7 +436,7 @@ namespace MovieBooker.DataAccess.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ToDateTime")
@@ -435,8 +461,8 @@ namespace MovieBooker.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CinemaId")
-                        .HasColumnType("int");
+                    b.Property<bool>("HandicapSeat")
+                        .HasColumnType("bit");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
@@ -448,8 +474,6 @@ namespace MovieBooker.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CinemaId");
 
                     b.HasIndex("RoomId");
 
@@ -464,7 +488,7 @@ namespace MovieBooker.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CinemaId")
+                    b.Property<int>("CinemaId")
                         .HasColumnType("int");
 
                     b.Property<int>("FromDayOfWeek")
@@ -591,11 +615,41 @@ namespace MovieBooker.DataAccess.Migrations
                     b.ToTable("MovieTag");
                 });
 
+            modelBuilder.Entity("BookingSeat", b =>
+                {
+                    b.HasOne("MovieBooker.DataAccess.Model.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieBooker.DataAccess.Model.Seat", null)
+                        .WithMany()
+                        .HasForeignKey("SeatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("CategoryMovie", b =>
                 {
                     b.HasOne("MovieBooker.DataAccess.Model.Category", null)
                         .WithMany()
                         .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieBooker.DataAccess.Model.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MoviesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CinemaMovie", b =>
+                {
+                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", null)
+                        .WithMany()
+                        .HasForeignKey("CinemasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -666,8 +720,14 @@ namespace MovieBooker.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("MovieBooker.DataAccess.Model.Movie", "Movie")
-                        .WithMany("Bookings")
+                        .WithMany()
                         .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieBooker.DataAccess.Model.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -677,23 +737,19 @@ namespace MovieBooker.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieBooker.DataAccess.Model.Seat", "Seat")
-                        .WithMany()
-                        .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MovieBooker.DataAccess.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cinema");
 
                     b.Navigation("Movie");
 
-                    b.Navigation("Runtime");
+                    b.Navigation("Room");
 
-                    b.Navigation("Seat");
+                    b.Navigation("Runtime");
 
                     b.Navigation("User");
                 });
@@ -709,18 +765,15 @@ namespace MovieBooker.DataAccess.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("MovieBooker.DataAccess.Model.Movie", b =>
-                {
-                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", null)
-                        .WithMany("Movies")
-                        .HasForeignKey("CinemaId");
-                });
-
             modelBuilder.Entity("MovieBooker.DataAccess.Model.OpeningTime", b =>
                 {
-                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", null)
+                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", "Cinema")
                         .WithMany("Openings")
-                        .HasForeignKey("CinemaId");
+                        .HasForeignKey("CinemaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cinema");
                 });
 
             modelBuilder.Entity("MovieBooker.DataAccess.Model.Room", b =>
@@ -748,43 +801,35 @@ namespace MovieBooker.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MovieBooker.DataAccess.Model.Room", "Room")
+                    b.HasOne("MovieBooker.DataAccess.Model.Room", null)
                         .WithMany("Runtimes")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoomId");
 
                     b.Navigation("Cinema");
 
                     b.Navigation("Movie");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("MovieBooker.DataAccess.Model.Seat", b =>
                 {
-                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", "Cinema")
-                        .WithMany()
-                        .HasForeignKey("CinemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MovieBooker.DataAccess.Model.Room", "Room")
                         .WithMany("Seats")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cinema");
-
                     b.Navigation("Room");
                 });
 
             modelBuilder.Entity("MovieBooker.DataAccess.Model.SpecialOpeningTime", b =>
                 {
-                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", null)
+                    b.HasOne("MovieBooker.DataAccess.Model.Cinema", "Cinema")
                         .WithMany("SpecialOpenings")
-                        .HasForeignKey("CinemaId");
+                        .HasForeignKey("CinemaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cinema");
                 });
 
             modelBuilder.Entity("MovieTag", b =>
@@ -804,8 +849,6 @@ namespace MovieBooker.DataAccess.Migrations
 
             modelBuilder.Entity("MovieBooker.DataAccess.Model.Cinema", b =>
                 {
-                    b.Navigation("Movies");
-
                     b.Navigation("Openings");
 
                     b.Navigation("Rooms");
@@ -817,8 +860,6 @@ namespace MovieBooker.DataAccess.Migrations
 
             modelBuilder.Entity("MovieBooker.DataAccess.Model.Movie", b =>
                 {
-                    b.Navigation("Bookings");
-
                     b.Navigation("Runtimes");
                 });
 
