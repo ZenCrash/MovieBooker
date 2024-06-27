@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,15 +12,23 @@ namespace MovieBooker.DataAccess.Model
     public class Runtime
     {
         public int Id { get; set; }
-        [Required]
         public DateTime FromDateTime { get; set; }
-        [Required]
         public DateTime ToDateTime { get; set; }
-        [Required]
         public Cinema Cinema { get; set; }
-        [Required]
         public Movie Movie { get; set; }
         public Room Room { get; set; }
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    }
+
+    public class RuntimeConfiguration : IEntityTypeConfiguration<Runtime>
+    {
+        public void Configure(EntityTypeBuilder<Runtime> builder)
+        {
+            //Properties
+            builder.Property(e => e.FromDateTime).IsRequired();
+            builder.Property(e => e.ToDateTime).IsRequired();
+            //Relationships
+            builder.HasOne(e => e.Cinema).WithMany()
+        }
     }
 }
